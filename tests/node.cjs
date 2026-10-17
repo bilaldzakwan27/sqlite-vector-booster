@@ -2,7 +2,12 @@
 
 const assert = require('node:assert/strict');
 const { test } = require('node:test');
-const { DatabaseSync } = require('node:sqlite');
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = require('node:sqlite'));
+} catch (error) {
+  if (error.code !== 'ERR_UNKNOWN_BUILTIN_MODULE') throw error;
+}
 const { load } = require('../npm/index.cjs');
 
 function vector(values) {
@@ -11,7 +16,15 @@ function vector(values) {
   return buffer;
 }
 
-test('Node loads the packaged extension and executes both distances', () => {
+test('loader rejects invalid connection arguments on supported Node versions', () => {
+  for (const value of [null, undefined, {}, 42]) {
+    assert.throws(() => load(value), /synchronous loadExtension/);
+  }
+});
+
+test('Node loads the packaged extension and executes both distances', {
+  skip: !DatabaseSync && 'DatabaseSync integration requires Node 24+; wrapper tests still run on Node 18+',
+}, () => {
   const db = new DatabaseSync(':memory:', { allowExtension: true });
   try {
     load(db);
