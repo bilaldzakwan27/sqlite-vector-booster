@@ -75,6 +75,14 @@ jobs:
           cargo test --release --locked
       - name: Validate SQLite ABI and SQL behavior
         run: python tests/integration.py
+      - name: Verify SQLite CLI end to end
+        if: runner.os == 'Linux'
+        run: |
+          if ! command -v sqlite3 >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y sqlite3
+          fi
+          python tests/cli.py
       - name: Check installation and UAT regressions
         run: python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Run accuracy, boundary, performance, and memory QA
