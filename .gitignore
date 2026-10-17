@@ -1,0 +1,12 @@
+/target/
+/dist/
+/build/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+*.tgz
+/python/sqlite_vector_booster/native/
+/npm/native/
+.DS_Store

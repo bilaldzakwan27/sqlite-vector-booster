@@ -1,0 +1,31 @@
+[package]
+name = "sqlite-vector-booster"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "SIMD-accelerated, allocation-free SQLite vector distance functions"
+readme = "README.md"
+
+[lib]
+name = "sqlite_vector_booster"
+crate-type = ["cdylib", "rlib"]
+
+[[bench]]
+name = "distance"
+path = "benchmarks/distance.rs"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "unwind"
+strip = "debuginfo"
+
+[profile.bench]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
