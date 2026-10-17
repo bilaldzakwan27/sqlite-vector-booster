@@ -50,6 +50,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Select extension-enabled Python on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install python@3.12
+          "$(brew --prefix python@3.12)/bin/python3.12" -m venv "$RUNNER_TEMP/sqlite-booster-python"
+          "$RUNNER_TEMP/sqlite-booster-python/bin/python" -c 'import sqlite3; assert hasattr(sqlite3.Connection, "enable_load_extension")'
+          echo "$RUNNER_TEMP/sqlite-booster-python/bin" >> "$GITHUB_PATH"
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
