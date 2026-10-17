@@ -39,14 +39,14 @@ If activation is blocked, use `.venv\Scripts\python.exe` directly; activation is
 | --- | --- | --- |
 | Linux x86-64 | `py3-none-linux_x86_64.whl` | glibc 2.35+ (Ubuntu 22.04+ baseline); not Alpine/musl |
 | Windows x86-64 | `py3-none-win_amd64.whl` | 64-bit Windows Python |
-| macOS Apple Silicon | `py3-none-macosx_11_0_arm64.whl` | Patched builds target macOS 11+ |
-| macOS Intel / Rosetta Python | `py3-none-macosx_11_0_x86_64.whl` | Patched builds target macOS 11+ |
+| macOS Apple Silicon | `py3-none-macosx_11_0_arm64.whl` | macOS 15+ tested; binary deployment target 11 |
+| macOS Intel / Rosetta Python | `py3-none-macosx_11_0_x86_64.whl` | macOS 15+ tested; binary deployment target 11 |
 
-**Release status:** this source is the **0.1.1 release candidate**. Existing **v0.1.0**
+**Release status:** version **0.1.1** includes the compatibility and onboarding fixes. Existing **v0.1.0**
 macOS wheels are tagged `macosx_15_0` and need macOS 15+ for pip installation.
-On macOS 11–14 use the source installation below until a patched wheel is released.
-Do not rename old wheels to bypass compatibility checks. macOS 11 is the native
-build deployment target; CI runs macOS 15 and does not replace a runtime test on macOS 11.
+macOS **15+** is the tested support baseline for both architectures. macOS 11–14
+remain unverified: the binary deployment target and wheel tag are 11, but that is
+not a runtime support guarantee. Do not rename old wheels to bypass compatibility checks.
 Linux arm64, Windows arm64, and musl are not prebuilt release targets.
 PyPI/npm registry publication is not configured; use the explicit local package or release asset instructions.
 
@@ -293,6 +293,10 @@ cargo build --release --locked
 python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
+Linux CI additionally runs the actual SQLite CLI smoke test (`python tests/cli.py`),
+including `.load`, both metrics, nearest-neighbor ordering, and malformed-input errors.
+It requires the `sqlite3` executable and SQLITE_VECTOR_BOOSTER_LIBRARY.
+
 For the SQLite integration suite:
 
 ```sh
@@ -390,8 +394,8 @@ stored PAT. PyPI/npm registry publication remains a separate operation.
 
 Wheel creation verifies the native macOS binary's declared minimum OS and architecture.
 CI checks the actual wheel filename, internal Tag, and bundled Mach-O header before
-installation. Minimum-OS runtime testing remains a separate acceptance step; CI on
-macOS 15 alone does not establish macOS 11 runtime compatibility. Preserve old tags
+installation. Official macOS support is limited to the tested 15+ baseline. The 11 deployment
+target is retained for compatibility engineering, without claiming verified 11–14 runtime support. Preserve old tags
 and publish fixes under a new version. See [CONTRIBUTING.md](CONTRIBUTING.md) for the release checklist.
 
 ## Troubleshooting

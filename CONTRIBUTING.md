@@ -24,6 +24,8 @@ README Verification, then run:
 
 ```sh
 python tests/integration.py
+# Linux, with the sqlite3 CLI installed:
+python tests/cli.py
 python tests/python_package.py
 python qa_suite.py -q -o junit_family=legacy --junitxml=qa-results/results.xml
 node scripts/build-node.cjs
@@ -66,5 +68,6 @@ and the checks run. Add a focused regression test when fixing a functional failu
 7. After publication, download the actual assets, verify their checksums, repeat the
    smoke tests, and check anonymous access if the repository is public.
 
-Source fixes do not rewrite existing v0.1.0 release assets. The 0.1.1 changes remain
-a release candidate until tagged and published through this workflow.
+Source fixes do not rewrite existing v0.1.0 release assets. Publish 0.1.1 through
+the tag workflow after checks pass. The tested macOS support baseline is 15+;
+macOS 11–14 must remain explicitly unverified until runtime acceptance is available.
