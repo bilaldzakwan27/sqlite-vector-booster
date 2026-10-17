@@ -3,7 +3,7 @@
 import platform
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = ["extension_path", "load"]
 
 
@@ -19,14 +19,30 @@ def extension_path() -> str:
         raise RuntimeError(f"Unsupported operating system: {system}")
     path = Path(__file__).resolve().parent / "native" / names[system]
     if not path.is_file():
-        raise FileNotFoundError(f"Native extension not installed: {path}")
+        raise FileNotFoundError(
+            f"Native extension not installed: {path}. Reinstall a matching release "
+            "wheel, or install from source with the Rust toolchain in README.md."
+        )
     return str(path)
 
 
 def load(connection) -> None:
     """Load both distance functions, then disable extension loading."""
+    if not callable(getattr(connection, "load_extension", None)):
+        raise TypeError("Expected a sqlite3 connection with a load_extension method")
+    if not callable(getattr(connection, "enable_load_extension", None)):
+        raise RuntimeError(
+            "This Python SQLite build does not support extension loading. "
+            "Use an extension-enabled Python build; see README.md Troubleshooting."
+        )
     path = extension_path()
-    connection.enable_load_extension(True)
+    try:
+        connection.enable_load_extension(True)
+    except NotImplementedError as error:
+        raise RuntimeError(
+            "This Python SQLite build does not support extension loading. "
+            "Use an extension-enabled Python build; see README.md Troubleshooting."
+        ) from error
     try:
         connection.load_extension(path)
     finally:

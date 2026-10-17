@@ -75,6 +75,8 @@ jobs:
           cargo test --release --locked
       - name: Validate SQLite ABI and SQL behavior
         run: python tests/integration.py
+      - name: Check installation and UAT regressions
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Run accuracy, boundary, performance, and memory QA
         id: qa
         run: |
@@ -91,11 +93,14 @@ jobs:
       - name: Build and verify Python wheel
         run: |
           python -m pip wheel . --no-deps --wheel-dir dist
+          for wheel in dist/*.whl; do python verify_wheel.py "$wheel"; done
           python -m pip install --no-index --find-links dist sqlite-vector-booster
           python tests/python_package.py
+          python example.py
       - name: Verify npm package and Node integration
         run: |
           node scripts/build-node.cjs
+          npm install --no-save --package-lock=false better-sqlite3
           npm test
           npm pack --pack-destination dist
       - name: Package native library

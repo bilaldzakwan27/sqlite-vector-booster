@@ -1,4 +1,4 @@
-include Cargo.toml Cargo.lock rust-toolchain.toml LICENSE README.md
+include Cargo.toml Cargo.lock rust-toolchain.toml LICENSE README.md build_support.py
 recursive-include src *.rs
 recursive-include benchmarks *.rs
 recursive-include python *.py

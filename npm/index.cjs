@@ -12,7 +12,7 @@ function extensionPath() {
   const name = names[process.platform];
   if (!name) throw new Error(`Unsupported operating system: ${process.platform}`);
   const file = path.join(__dirname, 'native', name);
-  if (!fs.existsSync(file)) throw new Error(`Native extension not installed: ${file}`);
+  if (!fs.existsSync(file)) throw new Error(`Native extension not installed: ${file}. Reinstall with npm scripts enabled and the Rust prerequisites in README.md.`);
   return file;
 }
 

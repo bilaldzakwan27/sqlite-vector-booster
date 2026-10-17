@@ -1,6 +1,6 @@
 {
   "name": "sqlite-vector-booster",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SIMD-accelerated SQLite vector distance extension",
   "license": "MIT",
   "main": "npm/index.cjs",
@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "install": "node scripts/build-node.cjs",
-    "test": "node --test tests/node.cjs"
+    "test": "node --test tests/node.cjs tests/better-sqlite3.cjs"
   },
   "engines": {
     "node": ">=18"
