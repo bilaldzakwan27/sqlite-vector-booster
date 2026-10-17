@@ -230,6 +230,28 @@ BLOBs, non-finite inputs, numerical extremes, SQL NULL behavior, expression inde
 K-NN ordering, repeated loading, and concurrent independent connections. Rust tests
 also verify SQLite ABI slot offsets. Rust unwinding is contained at C entry points.
 
+The standalone pytest suite adds a strict performance and memory gate:
+
+```sh
+python -m pip install -r requirements-qa.txt
+python qa_suite.py -q -o junit_family=legacy --junitxml=qa-results/results.xml
+```
+
+`qa_suite.py` uses `SQLITE_VECTOR_BOOSTER_LIBRARY` when set and otherwise finds
+the local release library. It checks known 4D distances to six decimal places,
+executes malformed-input checks in isolated processes, and runs 100 timed exact
+top-10 queries over 10,000 seeded 128D vectors after warm-up. The mean must be
+strictly below 15 ms; p50, p95, and p99 are printed even with pytest capture enabled.
+The XML report includes all 100 latency samples in nanoseconds.
+
+A separate process performs 50,000 alternating cosine and squared-L2 calls after
+warm-up. It measures current resident memory and traced Python allocations every
+5,000 calls. Limits are 4 MiB retained RSS growth, 8 MiB peak sampled RSS growth,
+512 KiB retained Python allocation growth, and a fitted RSS growth rate of at most
+64 bytes per call. These are bounded-growth checks over the measured workload.
+The 15 ms latency threshold remains a hard gate on the machine running the suite.
+CI runs the suite on all four release targets and retains each JUnit report.
+
 ## Benchmarks
 
 Run benchmarks on the actual deployment hardware:
