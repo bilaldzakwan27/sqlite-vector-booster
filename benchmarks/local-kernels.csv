@@ -1,0 +1,17 @@
+backend,metric,dimensions,iterations,median_ns_per_pair,million_pairs_per_second,input_gb_per_second
+simd,cosine,128,100000,73.861,13.539,13.864
+scalar,cosine,128,100000,170.391,5.869,6.010
+simd,l2_squared,128,100000,38.984,25.651,26.267
+scalar,l2_squared,128,100000,145.186,6.888,7.053
+simd,cosine,384,100000,155.703,6.422,19.730
+scalar,cosine,384,100000,491.025,2.037,6.256
+simd,l2_squared,384,100000,99.335,10.067,30.926
+scalar,l2_squared,384,100000,461.154,2.168,6.662
+simd,cosine,768,100000,280.241,3.568,21.924
+scalar,cosine,768,100000,968.367,1.033,6.345
+simd,l2_squared,768,100000,163.781,6.106,37.514
+scalar,l2_squared,768,100000,680.142,1.470,9.033
+simd,cosine,1536,100000,341.199,2.931,36.014
+scalar,cosine,1536,100000,1197.718,0.835,10.260
+simd,l2_squared,1536,100000,245.481,4.074,50.057
+scalar,l2_squared,1536,100000,1137.677,0.879,10.801
