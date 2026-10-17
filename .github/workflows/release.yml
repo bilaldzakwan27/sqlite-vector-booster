@@ -53,7 +53,7 @@ jobs:
       - name: Select extension-enabled Python on macOS
         if: runner.os == 'macOS'
         run: |
-          brew install python@3.12
+          brew install --skip-link python@3.12
           "$(brew --prefix python@3.12)/bin/python3.12" -m venv "$RUNNER_TEMP/sqlite-booster-python"
           "$RUNNER_TEMP/sqlite-booster-python/bin/python" -c 'import sqlite3; assert hasattr(sqlite3.Connection, "enable_load_extension")'
           echo "$RUNNER_TEMP/sqlite-booster-python/bin" >> "$GITHUB_PATH"
