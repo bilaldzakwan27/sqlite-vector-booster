@@ -75,6 +75,19 @@ jobs:
           cargo test --release --locked
       - name: Validate SQLite ABI and SQL behavior
         run: python tests/integration.py
+      - name: Run accuracy, boundary, performance, and memory QA
+        id: qa
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-qa.txt
+          python -m pytest qa_suite.py -q -o junit_family=legacy --junitxml=qa-results/results.xml
+      - name: Upload QA report
+        if: always() && steps.qa.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-${{ matrix.target }}
+          path: qa-results/results.xml
+          if-no-files-found: warn
+          retention-days: 14
       - name: Build and verify Python wheel
         run: |
           python -m pip wheel . --no-deps --wheel-dir dist
